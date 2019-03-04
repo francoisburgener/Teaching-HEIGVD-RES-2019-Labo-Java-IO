@@ -7,10 +7,9 @@ import ch.heigvd.res.labio.interfaces.IFileExplorer;
 import ch.heigvd.res.labio.interfaces.IFileVisitor;
 import ch.heigvd.res.labio.quotes.QuoteClient;
 import ch.heigvd.res.labio.quotes.Quote;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
+
+import java.io.*;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -20,7 +19,7 @@ import org.apache.commons.io.FileUtils;
  * @author Olivier Liechti
  */
 public class Application implements IApplication {
-
+  
   /**
    * This constant defines where the quotes will be stored. The path is relative
    * to where the Java application is invoked.
@@ -38,7 +37,7 @@ public class Application implements IApplication {
      */
     System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
     
-       
+    
     int numberOfQuotes = 0;
     try {
       numberOfQuotes = Integer.parseInt(args[0]);
@@ -46,7 +45,7 @@ public class Application implements IApplication {
       System.err.println("The command accepts a single numeric argument (number of quotes to fetch)");
       System.exit(-1);
     }
-        
+    
     Application app = new Application();
     try {
       /*
@@ -77,7 +76,7 @@ public class Application implements IApplication {
       ex.printStackTrace();
     }
   }
-
+  
   @Override
   public void fetchAndStoreQuotes(int numberOfQuotes) throws IOException {
     clearOutputDirectory();
@@ -94,36 +93,57 @@ public class Application implements IApplication {
       for (String tag : quote.getTags()) {
         LOG.info("> " + tag);
       }
+      
+      storeQuote(quote,WORKSPACE_DIRECTORY);
     }
   }
   
   /**
    * This method deletes the WORKSPACE_DIRECTORY and its content. It uses the
    * apache commons-io library. You should call this method in the main method.
-   * 
-   * @throws IOException 
+   *
+   * @throws IOException
    */
   void clearOutputDirectory() throws IOException {
-    FileUtils.deleteDirectory(new File(WORKSPACE_DIRECTORY));    
+    FileUtils.deleteDirectory(new File(WORKSPACE_DIRECTORY));
   }
-
+  
   /**
    * This method stores the content of a quote in the local file system. It has
-   * 2 responsibilities: 
-   * 
+   * 2 responsibilities:
+   *
    * - with quote.getTags(), it gets a list of tags and uses
    *   it to create sub-folders (for instance, if a quote has three tags "A", "B" and
    *   "C", it will be stored in /quotes/A/B/C/quotes-n.utf8.
-   * 
+   *
    * - with quote.getQuote(), it has access to the text of the quote. It stores
    *   this text in UTF-8 file.
-   * 
+   *
    * @param quote the quote object, with tags and text
    * @param filename the name of the file to create and where to store the quote text
-   * @throws IOException 
+   * @throws IOException
    */
   void storeQuote(Quote quote, String filename) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    
+    List<String> listTag = quote.getTags();
+    
+    for(String tag : listTag){
+      filename += "/" + tag;
+    }
+    
+    try {
+      new File(filename).mkdirs();
+      filename += "/quote-" + quote.getValue().getId() + ".utf8";
+      FileWriter fileWriter = new FileWriter(filename);
+      fileWriter.write(quote.getQuote());
+      
+      fileWriter.flush();
+      fileWriter.close();
+      
+    }catch (IOException e){
+      System.out.println(e.getMessage());
+    }
   }
   
   /**
@@ -140,14 +160,21 @@ public class Application implements IApplication {
          * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
          * be pretty easy (we want to write the filename, including the path, to the writer passed in argument).
          */
+        
+        
+        try {
+          writer.write(file.getPath() + "\n");
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     });
   }
-
+  
   @Override
   public void processQuoteFiles() throws IOException {
     IFileExplorer explorer = new DFSFileExplorer();
-    explorer.explore(new File(WORKSPACE_DIRECTORY), new CompleteFileTransformer());    
+    explorer.explore(new File(WORKSPACE_DIRECTORY), new CompleteFileTransformer());
   }
-
+  
 }
