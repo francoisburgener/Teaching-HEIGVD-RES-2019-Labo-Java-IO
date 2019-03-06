@@ -94,6 +94,7 @@ public class Application implements IApplication {
         LOG.info("> " + tag);
       }
       
+      //Store the quote
       storeQuote(quote,WORKSPACE_DIRECTORY);
     }
   }
@@ -126,6 +127,8 @@ public class Application implements IApplication {
   void storeQuote(Quote quote, String filename) throws IOException {
     //throw new UnsupportedOperationException("The student has not implemented this method yet.");
     
+    
+    //We get all the tag
     List<String> listTag = quote.getTags();
     
     for(String tag : listTag){
@@ -138,6 +141,7 @@ public class Application implements IApplication {
       FileWriter fileWriter = new FileWriter(filename);
       fileWriter.write(quote.getQuote());
       
+      //We flush and close the writer
       fileWriter.flush();
       fileWriter.close();
       

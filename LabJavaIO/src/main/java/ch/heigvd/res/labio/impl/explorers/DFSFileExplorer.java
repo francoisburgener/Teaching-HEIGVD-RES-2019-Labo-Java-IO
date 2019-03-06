@@ -22,14 +22,18 @@ public class DFSFileExplorer implements IFileExplorer {
     //We visit root directory
     vistor.visit(rootDirectory);
     
+    //We check if the directory exist or it's a file.
     if(!rootDirectory.exists() || rootDirectory.isFile()){
       return;
     }
+    
+    //Get all files of the directory (file and directory)
     File[] files = rootDirectory.listFiles();
     
     //We sort the arrays of file because the OS don't necessarily take the files in alphabetic order
     Arrays.sort(files);
     
+    //We explore all the file and if it's a directory we explore again all the file
     for(File file : files){
       explore(file,vistor);
     }
