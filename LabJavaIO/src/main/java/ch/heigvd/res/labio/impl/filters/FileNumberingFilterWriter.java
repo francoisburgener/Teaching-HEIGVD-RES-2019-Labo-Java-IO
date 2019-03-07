@@ -20,8 +20,8 @@ public class FileNumberingFilterWriter extends FilterWriter {
   
   private static final Logger LOG = Logger.getLogger(FileNumberingFilterWriter.class.getName());
   
-  private int numLine = 0;
-  private int previous = 0;
+  private int numLine = 0;  //Number of the line
+  private int previous = 0; //Previous char
   
   public FileNumberingFilterWriter(Writer out) {
     super(out);
@@ -29,11 +29,14 @@ public class FileNumberingFilterWriter extends FilterWriter {
   
   @Override
   public void write(String str, int off, int len) throws IOException {
-    
+  
+  
+    //We check if the offset ans the length is not bigger than the length of the string
     if(off + len > str.length()){
       throw new BufferOverflowException();
     }
     
+    //For each char call method write(int c)
     for(int i = off; i < off + len; ++i){
       write(str.charAt(i));
     }
@@ -42,9 +45,13 @@ public class FileNumberingFilterWriter extends FilterWriter {
   
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
+    
+    //We check if the offset ans the length is not bigger than the length of the string
     if(off + len > cbuf.length){
       throw new BufferOverflowException();
     }
+    
+    //For each char call method write(int c)
     for(int i = off; i < off + len; ++i){
       write(cbuf[i]);
     }
@@ -65,7 +72,7 @@ public class FileNumberingFilterWriter extends FilterWriter {
       writeNewLine();
     }
     
-    //display the actual char
+    //display the actual char and
     super.write(c);
     previous = c;
     
@@ -75,6 +82,11 @@ public class FileNumberingFilterWriter extends FilterWriter {
     
   }
   
+  
+  /**
+   * Method to write the line number and a tabulation
+   * @throws IOException
+   */
   private void writeNewLine() throws IOException {
     String toWtrite = Integer.toString(++numLine) + "\t";
     super.write(toWtrite,0,toWtrite.length());
