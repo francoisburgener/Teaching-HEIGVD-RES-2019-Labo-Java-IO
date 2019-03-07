@@ -20,7 +20,7 @@ public class UpperCaseFilterWriter extends FilterWriter {
     
     //We check if the offset ans the length is not bigger than the length of the string
     if(off + len > str.length()){
-      throw new BufferOverflowException();
+      throw new IllegalArgumentException();
     }
     
     //We do the uppercase on the potion of the string char by char
@@ -34,7 +34,7 @@ public class UpperCaseFilterWriter extends FilterWriter {
     
     //We check if the offset ans the length is not bigger than the length of the string
     if(off + len > cbuf.length){
-      throw new BufferOverflowException();
+      throw new IllegalArgumentException();
     }
     
     //We do the uppercase on the potion of the string char by char

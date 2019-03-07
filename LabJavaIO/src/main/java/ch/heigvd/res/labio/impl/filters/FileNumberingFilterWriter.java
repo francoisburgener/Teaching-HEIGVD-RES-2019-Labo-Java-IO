@@ -33,7 +33,7 @@ public class FileNumberingFilterWriter extends FilterWriter {
   
     //We check if the offset ans the length is not bigger than the length of the string
     if(off + len > str.length()){
-      throw new BufferOverflowException();
+      throw new IllegalArgumentException();
     }
     
     //For each char call method write(int c)
@@ -48,7 +48,7 @@ public class FileNumberingFilterWriter extends FilterWriter {
     
     //We check if the offset ans the length is not bigger than the length of the string
     if(off + len > cbuf.length){
-      throw new BufferOverflowException();
+      throw new IllegalArgumentException();
     }
     
     //For each char call method write(int c)
